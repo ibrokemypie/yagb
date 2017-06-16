@@ -5,5 +5,6 @@ import (
 )
 
 func main() {
-	config.Init()
+	internal.Config()
+	internal.Bar()
 }

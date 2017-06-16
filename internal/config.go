@@ -1,20 +1,19 @@
-package config
+package internal
 
 import(
 	"fmt"
 	"github.com/alecthomas/kingpin"
 	"os"
-	"bufio"
-	"strings"
+	"github.com/vaughan0/go-ini"
 )
 
 
 var (
-	confOverride  = kingpin.Flag("inputFile", "Input playlist file to parse.").Short('c').String()
-	lines =  make([]string, 0)
+	confOverride  = kingpin.Flag("config", "Override config file.").Short('c').String()
+	moduleList = make([]string, 0)
 )
 
-func Init() {
+func Config() {
 	kingpin.Parse()
 	configFile := whichFile(confOverride)
 	readFile(configFile)
@@ -25,8 +24,8 @@ func whichFile(confOverride *string) *os.File {
 	configFile *os.File
 	err error
 	configDir string
-
 	)
+
 	if *confOverride != "" {
 		fmt.Println("Config override is " + *confOverride)
 		configFile, err = os.Open(*confOverride)
@@ -45,25 +44,20 @@ func whichFile(confOverride *string) *os.File {
 	}
 
 	if err != nil {
-		fmt.Println(err)
+		panic(err)
 	}
 	return configFile
 }
 
 func readFile(configFile *os.File) {
-	file := bufio.NewScanner(configFile)
-	for file.Scan() {
-		line := file.Text()
-		if line == "" {
-			continue
-		}
-		if strings.HasPrefix(line, "#") {
-			continue
-		}
-		lines = append(lines, line)
+	configuration, err := ini.Load(configFile)
+	if err != nil {
+		panic(err)
 	}
-
-	for _,line := range lines {
-		fmt.Println(line)
+	for name, _ := range configuration{
+		fmt.Printf("Section name: %s\n", name)
+		for key, value := range configuration[name] {
+			 fmt.Printf("\t%s = %s\n", key, value)
+		}
 	}
 }

@@ -6,5 +6,5 @@ import (
 
 func main() {
 	internal.Config()
-	internal.Bar()
+	//internal.Bar()
 }

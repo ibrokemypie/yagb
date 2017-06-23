@@ -1,29 +1,31 @@
 package internal
 
-import(
+import (
 	"fmt"
-	"github.com/alecthomas/kingpin"
 	"os"
+
+	"github.com/alecthomas/kingpin"
 	"github.com/vaughan0/go-ini"
 )
 
-
 var (
-	confOverride  = kingpin.Flag("config", "Override config file.").Short('c').String()
-	moduleList = make([]string, 0)
+	confOverride = kingpin.Flag("config", "Override config file.").Short('c').String()
+	moduleList   = make([][]map[string]string, 0)
 )
 
+// Config function
 func Config() {
 	kingpin.Parse()
 	configFile := whichFile(confOverride)
 	readFile(configFile)
+	fmt.Println(moduleList)
 }
 
 func whichFile(confOverride *string) *os.File {
 	var (
-	configFile *os.File
-	err error
-	configDir string
+		configFile *os.File
+		err        error
+		configDir  string
 	)
 
 	if *confOverride != "" {
@@ -31,12 +33,12 @@ func whichFile(confOverride *string) *os.File {
 		configFile, err = os.Open(*confOverride)
 	} else {
 		if os.Getenv("XDG_CONFIG_HOME") != "" {
-			configDir = os.Getenv("XDG_CONFIG_HOME")+"/.config/yagdb/"
+			configDir = os.Getenv("XDG_CONFIG_HOME") + "/.config/yagdb/"
 		} else {
-			configDir = os.Getenv("HOME")+"/.config/yagdb/"
+			configDir = os.Getenv("HOME") + "/.config/yagdb/"
 		}
 
-		configFile, err = os.Open(configDir+"/yagb.conf")
+		configFile, err = os.Open(configDir + "/yagb.conf")
 
 		if err != nil {
 			configFile, err = os.Open("/etc/yagb.conf")
@@ -54,10 +56,18 @@ func readFile(configFile *os.File) {
 	if err != nil {
 		panic(err)
 	}
-	for name, _ := range configuration{
-		fmt.Printf("Section name: %s\n", name)
-		for key, value := range configuration[name] {
-			 fmt.Printf("\t%s = %s\n", key, value)
+	for section := range configuration {
+		// Slice of maps of string to string
+		var sectionVars = make([]map[string]string, 0)
+		for key, value := range configuration[section] {
+			// Map of string to string, key to value
+			var keyValue = make(map[string]string)
+			keyValue[key] = value
+			sectionVars = append(sectionVars, keyValue)
 		}
+		// Map of string to slice of maps etc
+		var sectionS = make(map[string][]map[string]string, 0)
+		sectionS[section] = sectionVars
+		moduleList = append(moduleList, sectionS[section])
 	}
 }

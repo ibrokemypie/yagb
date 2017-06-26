@@ -5,6 +5,6 @@ import (
 )
 
 func main() {
-	internal.Config()
-	//internal.Bar()
+	iniFile := internal.Config()
+	internal.Bar(iniFile)
 }

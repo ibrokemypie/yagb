@@ -14,11 +14,11 @@ var (
 )
 
 // Config function
-func Config() {
+func Config() ini.File {
 	kingpin.Parse()
 	configFile := whichFile(confOverride)
-	readFile(configFile)
-	fmt.Println(moduleList)
+	iniConf := readFile(configFile)
+	return iniConf
 }
 
 func whichFile(confOverride *string) *os.File {
@@ -51,23 +51,11 @@ func whichFile(confOverride *string) *os.File {
 	return configFile
 }
 
-func readFile(configFile *os.File) {
+func readFile(configFile *os.File) ini.File {
 	configuration, err := ini.Load(configFile)
 	if err != nil {
 		panic(err)
-	}
-	for section := range configuration {
-		// Slice of maps of string to string
-		var sectionVars = make([]map[string]string, 0)
-		for key, value := range configuration[section] {
-			// Map of string to string, key to value
-			var keyValue = make(map[string]string)
-			keyValue[key] = value
-			sectionVars = append(sectionVars, keyValue)
-		}
-		// Map of string to slice of maps etc
-		var sectionS = make(map[string][]map[string]string, 0)
-		sectionS[section] = sectionVars
-		moduleList = append(moduleList, sectionS[section])
+	} else {
+		return configuration
 	}
 }

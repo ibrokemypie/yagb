@@ -7,7 +7,7 @@ import (
 func DateTime(channel chan string) {
 	var (
 		datetime = "02/01/06 15:04:05"
-		style = datetime
+		style    = datetime
 		interval = 1000
 	)
 

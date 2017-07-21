@@ -6,6 +6,7 @@ import (
 	"time"
 )
 
+//Header is the initial slug for the i3bar
 type Header struct {
 	Version     int  `json:"version"`
 	StopSignal  int  `json:"stop_signal,omitempty"`
@@ -13,6 +14,7 @@ type Header struct {
 	ClickEvents bool `json:"click_events,omitempty"`
 }
 
+//Block contains the fields each module can use
 type Block struct {
 	FullText            string `json:"full_text"`
 	ShortText           string `json:"short_text,omitempty"`
@@ -28,6 +30,7 @@ type Block struct {
 	Markup              string `json:"markup,omitempty"`
 }
 
+//Print outputs data in the i3bar streaming json format
 func Print(blocks *[]Block) {
 	h, _ := json.Marshal(header)
 	fmt.Println(string(h))

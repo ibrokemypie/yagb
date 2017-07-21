@@ -7,6 +7,7 @@ import (
 	"github.com/shirou/gopsutil/cpu"
 )
 
+//CpuFreq gets the current CPU utilization as a percentage every `interval` milliseconds
 func CpuFreq(channel chan string) {
 	var (
 		interval  = 1000

@@ -1,0 +1,17 @@
+language: go
+
+go:
+  - 1.8.x
+  - tip
+
+before_install:
+  - go get -t -v ./...
+  - npm install -g codeclimate-test-reporter
+
+script:
+  - go test -race -coverprofile=coverage.txt -covermode=atomic
+  - go test -race -coverprofile=coverage.out -covermode=atomic
+
+after_success:
+  - codeclimate-test-reporter < coverage.out
+  - bash <(curl -s https://codecov.io/bash)

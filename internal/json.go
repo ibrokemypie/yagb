@@ -37,8 +37,9 @@ func Print(blocks *[]Block) {
 	fmt.Println("[")
 	for {
 		j, _ := json.Marshal(blocks)
+		fmt.Printf("\r")
 		fmt.Printf(string(j))
-		fmt.Println(",")
+		fmt.Printf(", ")
 		time.Sleep(time.Duration(1000) * time.Millisecond)
 	}
 }

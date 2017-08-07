@@ -15,22 +15,21 @@ var header = Header{
 	ClickEvents: true,
 }
 
-var bar []interface{}
+var bar []func(chan string)
 var blocks []Block
 var number = 0
 
 // Bar is a thing
 func Bar(iniFile ini.File) {
-	for name := range iniFile {
+	for name, _ := range iniFile {
 		if functions[name] != nil {
 			bar = append(bar, functions[name])
+			go get(functions[name], number)
+			var block Block
+			block.Name = name
+			blocks = append(blocks, block)
+			number++
 		}
-	}
-	for _, module := range bar {
-		go get(module.(func(chan string)), number)
-		var block Block
-		blocks = append(blocks, block)
-		number++
 	}
 	Print(&blocks)
 }

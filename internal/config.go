@@ -41,7 +41,7 @@ func whichFile(confOverride *string) *os.File {
 		configFile, err = os.Open(configDir + "/yagb.conf")
 
 		if err != nil {
-			fmt.Println("Config file not found in user config directories...")
+			//fmt.Println("Config file not found in user config directories...")
 			configFile, err = os.Open("/etc/yagb.conf")
 		}
 	}

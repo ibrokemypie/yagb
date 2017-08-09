@@ -6,6 +6,7 @@ import (
 )
 
 var functions = map[string]func(chan string){
+	"ram_usage": modules.RamUsage,
 	"cpu_freq":  modules.CpuFreq,
 	"date_time": modules.DateTime,
 }

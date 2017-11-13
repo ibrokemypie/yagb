@@ -3,7 +3,6 @@ package internal
 import (
 	"encoding/json"
 	"fmt"
-	"time"
 )
 
 //Header is the initial slug for the i3bar
@@ -31,7 +30,7 @@ type Block struct {
 }
 
 //Print outputs data in the i3bar streaming json format
-func Print(blocks *[]Block) {
+func Print(blocks *[]Block, done chan bool) {
 	h, _ := json.Marshal(header)
 	fmt.Println(string(h))
 	fmt.Println("[")
@@ -40,6 +39,6 @@ func Print(blocks *[]Block) {
 		fmt.Printf("\r")
 		fmt.Printf(string(j))
 		fmt.Printf(", ")
-		time.Sleep(time.Duration(1000) * time.Millisecond)
+		<-done
 	}
 }

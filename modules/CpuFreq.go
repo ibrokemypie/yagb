@@ -16,8 +16,7 @@ func CpuFreq(channel chan string, done chan bool) {
 
 	for {
 		p, _ := cpu.Percent(time.Duration(0)*time.Millisecond, false)
-		channel <- strconv.FormatFloat(p[0], 'f', precision, 64) + "%%"
-		done <- true
-		time.Sleep(time.Duration(interval) * time.Millisecond)
+		s := strconv.FormatFloat(p[0], 'f', precision, 64) + "%%"
+		send(channel, interval, s, done)
 	}
 }

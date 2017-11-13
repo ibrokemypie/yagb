@@ -2,7 +2,6 @@ package modules
 
 import (
 	"strconv"
-	"time"
 
 	"github.com/shirou/gopsutil/mem"
 )
@@ -22,8 +21,6 @@ func RamUsage(channel chan string, done chan bool) {
 			"used":       string(strconv.FormatUint(memo.Used, 10)),
 		}
 
-		channel <- modes[mode]
-		done <- true
-		time.Sleep(time.Duration(interval) * time.Millisecond)
+		send(channel, interval, modes[mode], done)
 	}
 }

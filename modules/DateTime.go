@@ -13,8 +13,7 @@ func DateTime(channel chan string, done chan bool) {
 	)
 
 	for {
-		channel <- time.Now().Format(style)
-		done <- true
-		time.Sleep(time.Duration(interval) * time.Millisecond)
+		time := time.Now().Format(style)
+		send(channel, interval, time, done)
 	}
 }

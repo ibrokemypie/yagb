@@ -25,24 +25,20 @@ func whichFile(confOverride *string) *os.File {
 	var (
 		configFile *os.File
 		err        error
-		configDir  string
 	)
 
 	if *confOverride != "" {
 		fmt.Println("Config override is " + *confOverride)
 		configFile, err = os.Open(*confOverride)
 	} else {
-		if os.Getenv("XDG_CONFIG_HOME") != "" {
-			configDir = os.Getenv("XDG_CONFIG_HOME") + "/.config/yagb/"
-		} else {
-			configDir = os.Getenv("HOME") + "/.config/yagb/"
-		}
-
-		configFile, err = os.Open(configDir + "/yagb.conf")
-
+		configFile, err = os.Open(os.Getenv("XDG_CONFIG_HOME") + "/yagb/yagb.conf")
 		if err != nil {
-			//fmt.Println("Config file not found in user config directories...")
-			configFile, err = os.Open("/etc/yagb.conf")
+			configFile, err = os.Open(os.Getenv("HOME") + "/.config/yagb/yagb.conf")
+			if err != nil {
+				fmt.Println(err)
+				fmt.Println("Config file not found in user config directories...")
+				configFile, err = os.Open("/etc/yagb.conf")
+			}
 		}
 	}
 
